@@ -382,7 +382,12 @@ void WiFiComponent::wifi_event_callback_(system_event_id_t event, system_event_i
 }
 void WiFiComponent::wifi_register_callbacks_() {
   auto f = std::bind(&WiFiComponent::wifi_event_callback_, this, std::placeholders::_1, std::placeholders::_2);
-  //WiFi.onEvent(f);
+  WiFi.onEvent(std::function<void(arduino_event_id_t event, arduino_event_info_t info)>
+    ([fun=f](arduino_event_id_t event, arduino_event_info_t info){
+      system_event_info_t* info2 = (system_event_info_t*)&info;
+      system_event_id_t event2 = (system_event_id_t)event;
+      fun(event2, *info2);
+  }));
   WiFi.persistent(false);
 }
 wl_status_t WiFiComponent::wifi_sta_status_() { return WiFi.status(); }
