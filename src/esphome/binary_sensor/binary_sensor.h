@@ -112,10 +112,6 @@ class BinarySensor : public Nameable {
 
   virtual bool is_status_binary_sensor() const;
 
-#ifdef USE_MQTT_BINARY_SENSOR
-  MQTTBinarySensorComponent *get_mqtt() const;
-  void set_mqtt(MQTTBinarySensorComponent *mqtt);
-#endif
 
   // ========== OVERRIDE METHODS ==========
   // (You'll only need this when creating your own custom binary sensor)
@@ -131,9 +127,6 @@ class BinarySensor : public Nameable {
   bool has_state_{false};
   Deduplicator<bool> publish_dedup_;
 
-#ifdef USE_MQTT_BINARY_SENSOR
-  MQTTBinarySensorComponent *mqtt_{nullptr};
-#endif
 };
 
 class PressTrigger : public Trigger<> {

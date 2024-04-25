@@ -64,7 +64,6 @@
 #include "esphome/output/binary_output.h"
 #include "esphome/output/copy_output.h"
 #include "esphome/output/custom_output.h"
-#include "esphome/output/esp8266_pwm_output.h"
 #include "esphome/output/float_output.h"
 #include "esphome/output/gpio_binary_output_component.h"
 #include "esphome/output/ledc_output_component.h"
@@ -842,18 +841,6 @@ class Application {
    * @return The GPIOBinaryOutputComponent. Use this for advanced settings.
    */
   output::GPIOBinaryOutputComponent *make_gpio_output(const GPIOOutputPin &pin);
-#endif
-
-#ifdef USE_ESP8266_PWM_OUTPUT
-  /** Create an ESP8266 software PWM channel.
-   *
-   * Warning: This is a *software* PWM and therefore can have noticeable flickering. Additionally,
-   * this software PWM can't output values higher than 80%.
-   *
-   * @param pin The pin for this PWM output, supported pins are 0-16.
-   * @return The PWM output channel, use this for advanced settings and using it with lights.
-   */
-  output::ESP8266PWMOutput *make_esp8266_pwm_output(GPIOOutputPin pin);
 #endif
 
 #ifdef USE_MY9231_OUTPUT
