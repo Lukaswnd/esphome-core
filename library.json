@@ -17,8 +17,16 @@
   ],
   "dependencies": [
     {
-      "name": "ArduinoJson-esphomelib",
-      "version": "5.13.3"
+      "name": "FastLED",
+      "version":  "https://github.com/FastLED/FastLED.git"
+    },
+    {
+      "name": "ESPAsyncWebServer",
+      "version":  "https://github.com/me-no-dev/ESPAsyncWebServer.git"
+    },
+    {
+      "name": "ArduinoJson",
+      "version": "https://github.com/bblanchon/ArduinoJson.git"
     }
   ],
   "build": {

@@ -201,7 +201,7 @@ void reserve_global_json_build_buffer(size_t required_size) {
 
 const char *build_json(const json_build_t &f, size_t *length) {
   global_json_buffer.clear();
-  JsonObject &root = global_json_buffer.createObject();
+  JsonObject root = global_json_buffer.add<JsonObject>();
 
   f(root);
 
@@ -213,11 +213,11 @@ const char *build_json(const json_build_t &f, size_t *length) {
   // Discovery   | 336              | 311         |
   // Discovery   | 408              | 393         |
   reserve_global_json_build_buffer(global_json_buffer.size());
-  size_t bytes_written = root.printTo(global_json_build_buffer, global_json_build_buffer_size);
+  size_t bytes_written = serializeJson(root, global_json_build_buffer, global_json_build_buffer_size);
 
   if (bytes_written >= global_json_build_buffer_size - 1) {
-    reserve_global_json_build_buffer(root.measureLength() + 1);
-    bytes_written = root.printTo(global_json_build_buffer, global_json_build_buffer_size);
+    reserve_global_json_build_buffer(measureJson(root) + 1);
+    bytes_written = serializeJson(root, global_json_build_buffer, global_json_build_buffer_size);
   }
 
   *length = bytes_written;
@@ -225,9 +225,10 @@ const char *build_json(const json_build_t &f, size_t *length) {
 }
 void parse_json(const std::string &data, const json_parse_t &f) {
   global_json_buffer.clear();
-  JsonObject &root = global_json_buffer.parseObject(data);
+  deserializeJson(global_json_buffer, data);
+  JsonObject root = global_json_buffer.as<JsonObject>();
 
-  if (!root.success()) {
+  if (root.isNull()) {
     ESP_LOGW(TAG, "Parsing JSON failed.");
     return;
   }
@@ -458,7 +459,7 @@ void VectorJsonBuffer::clear() {
 VectorJsonBuffer::String VectorJsonBuffer::startString() { return {this}; }  // NOLINT
 void *VectorJsonBuffer::alloc(size_t bytes) {
   // Make sure memory addresses are aligned
-  uint32_t new_size = round_size_up(this->size_);
+  uint32_t new_size = this->size_;
   this->resize(new_size);
   return this->do_alloc(bytes);
 }
@@ -483,7 +484,7 @@ void VectorJsonBuffer::reserve(size_t size) {  // NOLINT
   uint32_t target_capacity = this->capacity_;
   if (this->capacity_ == 0) {
     // lazily initialize with a reasonable size
-    target_capacity = JSON_BUFFER_SIZE;
+    target_capacity = 16;
   }
   while (target_capacity < size)
     target_capacity *= 2;

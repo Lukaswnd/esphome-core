@@ -206,7 +206,7 @@ LightCall &LightCall::parse_color_json(JsonObject &root) {
   }
 
   if (root.containsKey("color")) {
-    JsonObject &color = root["color"];
+    JsonObject color = root["color"].as<JsonObject>();
     if (color.containsKey("r")) {
       this->set_red(float(color["r"]) / 255.0f);
     }

@@ -328,7 +328,7 @@ rmt_channel_t select_next_rmt_channel();
 
 void delay_microseconds_accurate(uint32_t usec);
 
-class VectorJsonBuffer : public ArduinoJson::Internals::JsonBufferBase<VectorJsonBuffer> {
+class VectorJsonBuffer : public ArduinoJson::JsonDocument {
  public:
   class String {
    public:
@@ -343,7 +343,7 @@ class VectorJsonBuffer : public ArduinoJson::Internals::JsonBufferBase<VectorJso
     uint32_t start_;
   };
 
-  void *alloc(size_t bytes) override;
+  void *alloc(size_t bytes);
 
   size_t size() const;
 

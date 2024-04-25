@@ -117,10 +117,11 @@ void LightColorValues::dump_json(JsonObject &root, const LightTraits &traits) co
   if (traits.has_brightness())
     root["brightness"] = uint8_t(this->get_brightness() * 255);
   if (traits.has_rgb()) {
-    JsonObject &color = root.createNestedObject("color");
+    JsonObject color;
     color["r"] = uint8_t(this->get_red() * 255);
     color["g"] = uint8_t(this->get_green() * 255);
     color["b"] = uint8_t(this->get_blue() * 255);
+    root["color"] = color;
   }
   if (traits.has_rgb_white_value())
     root["white_value"] = uint8_t(this->get_white() * 255);
