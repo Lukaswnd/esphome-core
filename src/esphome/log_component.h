@@ -10,7 +10,6 @@
 #include <unordered_map>
 
 #include "esphome/component.h"
-#include "esphome/mqtt/mqtt_component.h"
 #include "esphome/helpers.h"
 #include "esphome/log.h"
 #include "esphome/defines.h"

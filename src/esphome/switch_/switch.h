@@ -272,8 +272,6 @@ template<typename... Ts> SwitchPublishAction<Ts...> *Switch::make_switch_publish
 
 ESPHOME_NAMESPACE_END
 
-#include "esphome/switch_/mqtt_switch_component.h"
-
 #endif  // USE_SWITCH
 
 #endif  // ESPHOME_SWITCH_SWITCH_H

@@ -3,7 +3,6 @@
 #ifdef USE_STATUS_BINARY_SENSOR
 
 #include "esphome/binary_sensor/status_binary_sensor.h"
-#include "esphome/mqtt/mqtt_client_component.h"
 #include "esphome/wifi_component.h"
 #include "esphome/util.h"
 #include "esphome/log.h"
@@ -18,11 +17,6 @@ std::string StatusBinarySensor::device_class() { return "connectivity"; }
 StatusBinarySensor::StatusBinarySensor(const std::string &name) : BinarySensor(name) {}
 void StatusBinarySensor::loop() {
   bool status = network_is_connected();
-#ifdef USE_MQTT
-  if (mqtt::global_mqtt_client != nullptr) {
-    status = mqtt::global_mqtt_client->is_connected();
-  }
-#endif
 
   if (this->last_status_ != status) {
     this->publish_state(status);

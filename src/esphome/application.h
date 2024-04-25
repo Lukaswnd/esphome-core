@@ -15,7 +15,6 @@
 #include "esphome/esp_one_wire.h"
 #include "esphome/esphal.h"
 #include "esphome/esppreferences.h"
-#include "esphome/ethernet_component.h"
 #include "esphome/i2c_component.h"
 #include "esphome/log.h"
 #include "esphome/log_component.h"
@@ -33,7 +32,6 @@
 #include "esphome/binary_sensor/filter.h"
 #include "esphome/binary_sensor/gpio_binary_sensor_component.h"
 #include "esphome/binary_sensor/homeassistant_binary_sensor.h"
-#include "esphome/binary_sensor/mqtt_binary_sensor_component.h"
 #include "esphome/binary_sensor/pn532_component.h"
 #include "esphome/binary_sensor/rdm6300.h"
 #include "esphome/binary_sensor/status_binary_sensor.h"
@@ -42,11 +40,9 @@
 #include "esphome/binary_sensor/ttp229_lsf_sensor.h"
 #include "esphome/climate/bang_bang_climate.h"
 #include "esphome/climate/climate_device.h"
-#include "esphome/climate/mqtt_climate_component.h"
 #include "esphome/cover/cover.h"
 #include "esphome/cover/endstop_cover.h"
 #include "esphome/cover/time_based_cover.h"
-#include "esphome/cover/mqtt_cover_component.h"
 #include "esphome/cover/template_cover.h"
 #include "esphome/display/display.h"
 #include "esphome/display/lcd_display.h"
@@ -56,7 +52,6 @@
 #include "esphome/display/waveshare_epaper.h"
 #include "esphome/fan/basic_fan_component.h"
 #include "esphome/fan/fan_state.h"
-#include "esphome/fan/mqtt_fan_component.h"
 #include "esphome/io/mcp23017.h"
 #include "esphome/io/pcf8574_component.h"
 #include "esphome/light/addressable_light_effect.h"
@@ -65,11 +60,7 @@
 #include "esphome/light/light_effect.h"
 #include "esphome/light/light_output_component.h"
 #include "esphome/light/light_state.h"
-#include "esphome/light/mqtt_json_light_component.h"
 #include "esphome/light/neo_pixel_bus_light_output.h"
-#include "esphome/mqtt/custom_mqtt_device.h"
-#include "esphome/mqtt/mqtt_client_component.h"
-#include "esphome/mqtt/mqtt_component.h"
 #include "esphome/output/binary_output.h"
 #include "esphome/output/copy_output.h"
 #include "esphome/output/custom_output.h"
@@ -118,8 +109,6 @@
 #include "esphome/sensor/max6675_sensor.h"
 #include "esphome/sensor/mhz19_component.h"
 #include "esphome/sensor/mpu6050_component.h"
-#include "esphome/sensor/mqtt_sensor_component.h"
-#include "esphome/sensor/mqtt_subscribe_sensor.h"
 #include "esphome/sensor/ms5611.h"
 #include "esphome/sensor/pmsx003.h"
 #include "esphome/sensor/pulse_counter.h"
@@ -139,7 +128,6 @@
 #include "esphome/stepper/uln2003.h"
 #include "esphome/switch_/custom_switch.h"
 #include "esphome/switch_/gpio_switch.h"
-#include "esphome/switch_/mqtt_switch_component.h"
 #include "esphome/switch_/output_switch.h"
 #include "esphome/switch_/restart_switch.h"
 #include "esphome/switch_/shutdown_switch.h"
@@ -148,8 +136,6 @@
 #include "esphome/switch_/uart_switch.h"
 #include "esphome/text_sensor/custom_text_sensor.h"
 #include "esphome/text_sensor/homeassistant_text_sensor.h"
-#include "esphome/text_sensor/mqtt_subscribe_text_sensor.h"
-#include "esphome/text_sensor/mqtt_text_sensor.h"
 #include "esphome/text_sensor/template_text_sensor.h"
 #include "esphome/text_sensor/text_sensor.h"
 #include "esphome/text_sensor/version_text_sensor.h"
@@ -244,7 +230,7 @@ class Application {
 #endif
 
 #ifdef USE_UART
-  UARTComponent *init_uart(uint32_t baud_rate = 9600);
+  UARTComponent *init_uart(UARTComponent* serial);
 #endif
 
 #ifdef USE_SPI

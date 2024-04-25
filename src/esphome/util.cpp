@@ -1,7 +1,6 @@
 #include "esphome/util.h"
 #include "esphome/defines.h"
 #include "esphome/wifi_component.h"
-#include "esphome/ethernet_component.h"
 #include "esphome/api/api_server.h"
 #include "esphome/application.h"
 

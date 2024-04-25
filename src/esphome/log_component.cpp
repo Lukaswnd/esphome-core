@@ -5,7 +5,6 @@
 #endif
 #include <HardwareSerial.h>
 
-#include "esphome/mqtt/mqtt_client_component.h"
 #include "esphome/log.h"
 
 ESPHOME_NAMESPACE_BEGIN

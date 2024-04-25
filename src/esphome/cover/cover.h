@@ -35,9 +35,6 @@ template<typename... Ts> class CoverPublishAction;
     } \
   }
 
-#ifdef USE_MQTT_COVER
-class MQTTCoverComponent;
-#endif
 
 class Cover;
 
@@ -167,11 +164,6 @@ class Cover : public Nameable {
    */
   void publish_state(bool save = true);
 
-#ifdef USE_MQTT_COVER
-  MQTTCoverComponent *get_mqtt() const;
-  void set_mqtt(MQTTCoverComponent *mqtt);
-#endif
-
   virtual CoverTraits get_traits() = 0;
   void set_device_class(const std::string &device_class);
   std::string get_device_class();
@@ -193,9 +185,6 @@ class Cover : public Nameable {
   CallbackManager<void()> state_callback_{};
   optional<std::string> device_class_override_{};
 
-#ifdef USE_MQTT_COVER
-  MQTTCoverComponent *mqtt_{nullptr};
-#endif
   ESPPreferenceObject rtc_;
 };
 
@@ -203,7 +192,6 @@ class Cover : public Nameable {
 
 ESPHOME_NAMESPACE_END
 
-#include "esphome/cover/mqtt_cover_component.h"
 #include "esphome/cover/cover_automation.h"
 
 #endif  // USE_COVER

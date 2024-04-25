@@ -377,8 +377,6 @@ template<typename... Ts> SensorPublishAction<Ts...> *Sensor::make_sensor_publish
 
 ESPHOME_NAMESPACE_END
 
-#include "esphome/sensor/mqtt_sensor_component.h"
-
 #endif  // USE_SENSOR
 
 #endif  // ESPHOME_SENSOR_SENSOR_H

@@ -812,8 +812,8 @@ sensor::MHZ19Component *Application::make_mhz19_sensor(UARTComponent *parent, co
 #endif
 
 #ifdef USE_UART
-UARTComponent *Application::init_uart(uint32_t baud_rate) {
-  return this->register_component(new UARTComponent(baud_rate));
+UARTComponent *Application::init_uart(UARTComponent* serial) {
+  return this->register_component(serial);
 }
 #endif
 
