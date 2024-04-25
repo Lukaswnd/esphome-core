@@ -15,7 +15,11 @@ static const char *TAG = "sensor.esp32_hall";
 ESP32HallSensor::ESP32HallSensor(const std::string &name, uint32_t update_interval)
     : PollingSensorComponent(name, update_interval) {}
 void ESP32HallSensor::update() {
+#ifdef DARDUINO_ESP32_DEV
   float value = (hallRead() / 4095.0f) * 10000.0f;
+#else
+  float value = 0;
+#endif
   ESP_LOGD(TAG, "'%s': Got reading %.0f µT", this->name_.c_str(), value);
   this->publish_state(value);
 }

@@ -13,26 +13,26 @@ static const char *TAG = "binary_sensor.esp32_touch";
 
 void ESP32TouchComponent::setup() {
   ESP_LOGCONFIG(TAG, "Setting up ESP32 Touch Hub...");
-  touch_pad_init();
+  //touch_pad_init();
 
   if (this->iir_filter_enabled_()) {
-    touch_pad_filter_start(this->iir_filter_);
+    //touch_pad_filter_start(this->iir_filter_);
   }
 
-  touch_pad_set_meas_time(this->sleep_cycle_, this->meas_cycle_);
-  touch_pad_set_voltage(this->high_voltage_reference_, this->low_voltage_reference_, this->voltage_attenuation_);
+  //touch_pad_set_meas_time(this->sleep_cycle_, this->meas_cycle_);
+  //touch_pad_set_voltage(this->high_voltage_reference_, this->low_voltage_reference_, this->voltage_attenuation_);
 
   for (auto *child : this->children_) {
     // Disable interrupt threshold
-    touch_pad_config(child->get_touch_pad(), 0);
+    //touch_pad_config(child->get_touch_pad(), 0);
   }
 
   add_shutdown_hook([this](const char *cause) {
     if (this->iir_filter_enabled_()) {
-      touch_pad_filter_stop();
-      touch_pad_filter_delete();
+      //touch_pad_filter_stop();
+      //touch_pad_filter_delete();
     }
-    touch_pad_deinit();
+    //touch_pad_deinit();
   });
 }
 
@@ -103,7 +103,7 @@ void ESP32TouchComponent::dump_config() {
 
   if (this->iir_filter_enabled_()) {
     ESP_LOGCONFIG(TAG, "    IIR Filter: %ums", this->iir_filter_);
-    touch_pad_filter_start(this->iir_filter_);
+    //touch_pad_filter_start(this->iir_filter_);
   } else {
     ESP_LOGCONFIG(TAG, "  IIR Filter DISABLED");
   }
@@ -122,9 +122,9 @@ void ESP32TouchComponent::loop() {
   for (auto *child : this->children_) {
     uint16_t value;
     if (this->iir_filter_enabled_()) {
-      touch_pad_read_filtered(child->get_touch_pad(), &value);
+      //touch_pad_read_filtered(child->get_touch_pad(), &value);
     } else {
-      touch_pad_read(child->get_touch_pad(), &value);
+      //touch_pad_read(child->get_touch_pad(), &value);
     }
 
     child->publish_state(value < child->get_threshold());

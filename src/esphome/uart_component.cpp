@@ -24,7 +24,11 @@ void UARTComponent::setup() {
   // Use Arduino HardwareSerial UARTs if all used pins match the ones
   // preconfigured by the platform. For example if RX disabled but TX pin
   // is 1 we still want to use Serial.
-  if (this->tx_pin_.value_or(1) == 1 && this->rx_pin_.value_or(3) == 3) {
+  if (this->tx_pin_.value_or(1) == 1 && this->rx_pin_.value_or(3) == 3) 
+#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT
+    {this->hw_serial_ = &Serial;}
+#else
+    {
     this->hw_serial_ = &Serial;
   } else if (this->tx_pin_.value_or(9) == 9 && this->rx_pin_.value_or(10) == 10) {
     this->hw_serial_ = &Serial1;
@@ -33,9 +37,13 @@ void UARTComponent::setup() {
   } else {
     this->hw_serial_ = new HardwareSerial(next_uart_num++);
   }
+#endif
   int8_t tx = this->tx_pin_.has_value() ? *this->tx_pin_ : -1;
   int8_t rx = this->rx_pin_.has_value() ? *this->rx_pin_ : -1;
+#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT
+#else
   this->hw_serial_->begin(this->baud_rate_, SERIAL_8N1, rx, tx);
+#endif
 }
 
 void UARTComponent::dump_config() {

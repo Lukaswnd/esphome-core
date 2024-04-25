@@ -76,8 +76,11 @@ class UARTComponent : public Component, public Stream {
 
  protected:
   bool check_read_timeout_(size_t len = 1);
-
+#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT//Serial used for USB CDC
+  HWCDC *hw_serial_{nullptr};
+#else
   HardwareSerial *hw_serial_{nullptr};
+#endif
 #ifdef ARDUINO_ARCH_ESP8266
   ESP8266SoftwareSerial *sw_serial_{nullptr};
 #endif

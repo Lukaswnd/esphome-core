@@ -50,21 +50,6 @@ const char *GPIOPin::get_pin_mode_name() const {
     case OUTPUT_OPEN_DRAIN:
       mode_s = "OUTPUT_OPEN_DRAIN";
       break;
-    case SPECIAL:
-      mode_s = "SPECIAL";
-      break;
-    case FUNCTION_1:
-      mode_s = "FUNCTION_1";
-      break;
-    case FUNCTION_2:
-      mode_s = "FUNCTION_2";
-      break;
-    case FUNCTION_3:
-      mode_s = "FUNCTION_3";
-      break;
-    case FUNCTION_4:
-      mode_s = "FUNCTION_4";
-      break;
 
 #ifdef ARDUINO_ARCH_ESP32
     case PULLUP:
@@ -78,12 +63,6 @@ const char *GPIOPin::get_pin_mode_name() const {
       break;
     case OPEN_DRAIN:
       mode_s = "OPEN_DRAIN";
-      break;
-    case FUNCTION_5:
-      mode_s = "FUNCTION_5";
-      break;
-    case FUNCTION_6:
-      mode_s = "FUNCTION_6";
       break;
     case ANALOG:
       mode_s = "ANALOG";

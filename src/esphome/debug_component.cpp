@@ -99,17 +99,8 @@ void DebugComponent::dump_config() {
     case POWERON_RESET:
       reset_reason = "Power On Reset";
       break;
-    case SW_RESET:
-      reset_reason = "Software Reset Digital Core";
-      break;
-    case OWDT_RESET:
-      reset_reason = "Watch Dog Reset Digital Core";
-      break;
     case DEEPSLEEP_RESET:
       reset_reason = "Deep Sleep Reset Digital Core";
-      break;
-    case SDIO_RESET:
-      reset_reason = "SLC Module Reset Digital Core";
       break;
     case TG0WDT_SYS_RESET:
       reset_reason = "Timer Group 0 Watch Dog Reset Digital Core";
@@ -123,17 +114,8 @@ void DebugComponent::dump_config() {
     case INTRUSION_RESET:
       reset_reason = "Intrusion Reset CPU";
       break;
-    case TGWDT_CPU_RESET:
-      reset_reason = "Timer Group Reset CPU";
-      break;
-    case SW_CPU_RESET:
-      reset_reason = "Software Reset CPU";
-      break;
     case RTCWDT_CPU_RESET:
       reset_reason = "RTC Watch Dog Reset CPU";
-      break;
-    case EXT_CPU_RESET:
-      reset_reason = "External CPU Reset";
       break;
     case RTCWDT_BROWN_OUT_RESET:
       reset_reason = "Voltage Unstable Reset";

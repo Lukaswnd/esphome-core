@@ -91,7 +91,11 @@ class LogComponent : public Component {
   std::vector<char> tx_buffer_;
   int global_log_level_{ESPHOME_LOG_LEVEL};
   UARTSelection uart_{UART_SELECTION_UART0};
+#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT//Serial used for USB CDC
+  HWCDC *hw_serial_{nullptr};
+#else
   HardwareSerial *hw_serial_{nullptr};
+#endif
   struct LogLevelOverride {
     std::string tag;
     int level;

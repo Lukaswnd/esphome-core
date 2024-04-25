@@ -84,6 +84,8 @@ void LogComponent::pre_setup() {
 #endif
         this->hw_serial_ = &Serial;
         break;
+#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT//Serial used for USB CDC
+#else
       case UART_SELECTION_UART1:
         this->hw_serial_ = &Serial1;
         break;
@@ -91,6 +93,7 @@ void LogComponent::pre_setup() {
       case UART_SELECTION_UART2:
         this->hw_serial_ = &Serial2;
         break;
+#endif
 #endif
     }
 
