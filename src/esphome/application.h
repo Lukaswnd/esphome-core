@@ -164,8 +164,12 @@ class Application {
    * @param hw_serial The hardware serial UART used for logging.
    * @return The created and initialized LogComponent.
    */
-  LogComponent *init_log(uint32_t baud_rate = 115200, size_t tx_buffer_size = 512,
-                         UARTSelection uart = UART_SELECTION_UART0);
+  LogComponent *init_log(UARTDevice* device, size_t tx_buffer_size = 512);
+
+  LogComponent *init_log(UARTComponent* uart, size_t tx_buffer_size = 512);
+
+  LogComponent *init_log(size_t baud_rate = 115200, size_t tx_buffer_size = 512);
+
 
   /** Initialize the WiFi engine in client mode.
    *

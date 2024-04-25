@@ -175,8 +175,6 @@ template<typename... Ts> ToggleAction<Ts...> *FanState::make_toggle_action() { r
 
 ESPHOME_NAMESPACE_END
 
-#include "esphome/fan/mqtt_fan_component.h"
-
 #endif  // USE_FAN
 
 #endif  // ESPHOME_FAN_FAN_STATE_H

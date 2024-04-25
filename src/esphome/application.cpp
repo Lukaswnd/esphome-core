@@ -9,9 +9,6 @@
 
 ESPHOME_NAMESPACE_BEGIN
 
-#ifdef USE_MQTT
-using namespace esphome::mqtt;
-#endif
 #ifdef USE_BINARY_SENSOR
 using namespace esphome::binary_sensor;
 #endif
@@ -154,13 +151,6 @@ WiFiComponent *Application::init_wifi(const std::string &ssid, const std::string
   return wifi;
 }
 
-#ifdef USE_ETHERNET
-EthernetComponent *Application::init_ethernet() {
-  auto *eth = new EthernetComponent();
-  return this->register_component(eth);
-}
-#endif
-
 void Application::set_name(const std::string &name) {
   this->name_ = to_lowercase_underscore(name);
   global_preferences.begin(name);
@@ -169,34 +159,22 @@ void Application::set_name(const std::string &name) {
 void Application::set_compilation_datetime(const char *str) { this->compilation_time_ = str; }
 const std::string &Application::get_compilation_time() const { return this->compilation_time_; }
 
-#ifdef USE_MQTT
-MQTTClientComponent *Application::init_mqtt(const std::string &address, uint16_t port, const std::string &username,
-                                            const std::string &password) {
-  MQTTClientComponent *component = new MQTTClientComponent(
-      MQTTCredentials{
-          .address = address,
-          .port = port,
-          .username = username,
-          .password = password,
-      },
-      this->get_name());
-  this->mqtt_client_ = component;
 
-  return this->register_component(component);
-}
-#endif
-
-#ifdef USE_MQTT
-MQTTClientComponent *Application::init_mqtt(const std::string &address, const std::string &username,
-                                            const std::string &password) {
-  return this->init_mqtt(address, 1883, username, password);
-}
-#endif
-
-LogComponent *Application::init_log(uint32_t baud_rate, size_t tx_buffer_size, UARTSelection uart) {
-  auto *log = new LogComponent(baud_rate, tx_buffer_size, uart);
+LogComponent *Application::init_log(UARTDevice* device, size_t tx_buffer_size) {
+  auto *log = new LogComponent(device, tx_buffer_size);
   log->pre_setup();
   return this->register_component(log);
+}
+
+LogComponent *Application::init_log(UARTComponent* uart, size_t tx_buffer_size){
+  this->init_uart(uart);
+  return init_log(new UARTDevice(uart));
+}
+
+LogComponent *Application::init_log(size_t baud_rate, size_t tx_buffer_size) {
+  Serial.begin(baud_rate);
+  auto* uart = new UARTComponent_IMPL(Serial);
+  return init_log(uart, tx_buffer_size);
 }
 
 #ifdef USE_OUTPUT
@@ -211,11 +189,6 @@ PowerSupplyComponent *Application::make_power_supply(const GPIOOutputPin &pin, u
 void Application::register_binary_sensor(binary_sensor::BinarySensor *binary_sensor) {
   for (auto *controller : this->controllers_)
     controller->register_binary_sensor(binary_sensor);
-#ifdef USE_MQTT_BINARY_SENSOR
-  if (this->mqtt_client_ != nullptr) {
-    binary_sensor->set_mqtt(this->register_component(new MQTTBinarySensorComponent(binary_sensor)));
-  }
-#endif
 }
 #endif
 
@@ -246,11 +219,6 @@ DHTComponent *Application::make_dht_sensor(const std::string &temperature_friend
 void Application::register_sensor(sensor::Sensor *sensor) {
   for (auto *controller : this->controllers_)
     controller->register_sensor(sensor);
-#ifdef USE_MQTT_SENSOR
-  if (this->mqtt_client_ != nullptr) {
-    sensor->set_mqtt(this->register_component(new MQTTSensorComponent(sensor)));
-  }
-#endif
 }
 #endif
 
@@ -315,11 +283,6 @@ Application::MakeLight Application::make_cwww_light(const std::string &friendly_
 void Application::register_light(LightState *state) {
   for (auto *controller : this->controllers_)
     controller->register_light(state);
-#ifdef USE_MQTT_LIGHT
-  if (this->mqtt_client_ != nullptr) {
-    state->set_mqtt(this->register_component(new MQTTJSONLightComponent(state)));
-  }
-#endif
 }
 #endif
 
@@ -356,19 +319,11 @@ Application::MakeLight Application::make_light_for_light_output(const std::strin
 }
 #endif
 
-#ifdef USE_MQTT
-MQTTClientComponent *Application::get_mqtt_client() const { return this->mqtt_client_; }
-#endif
 
 #ifdef USE_SWITCH
 void Application::register_switch(switch_::Switch *a_switch) {
   for (auto *controller : this->controllers_)
     controller->register_switch(a_switch);
-#ifdef USE_MQTT_SWITCH
-  if (this->mqtt_client_ != nullptr) {
-    a_switch->set_mqtt(this->register_component(new MQTTSwitchComponent(a_switch)));
-  }
-#endif
 }
 #endif
 
@@ -487,14 +442,6 @@ I2CComponent *Application::init_i2c(uint8_t sda_pin, uint8_t scl_pin, bool scan)
 StatusBinarySensor *Application::make_status_binary_sensor(const std::string &friendly_name) {
   auto *binary_sensor = this->register_component(new StatusBinarySensor(friendly_name));
   this->register_binary_sensor(binary_sensor);
-#ifdef USE_MQTT_BINARY_SENSOR
-  if (binary_sensor->get_mqtt() != nullptr) {
-    auto *mqtt = binary_sensor->get_mqtt();
-    mqtt->set_custom_state_topic(this->mqtt_client_->get_availability().topic);
-    mqtt->disable_availability();
-    mqtt->set_is_status(true);
-  }
-#endif
   return binary_sensor;
 }
 #endif
@@ -541,11 +488,6 @@ DebugComponent *Application::make_debug_component() { return this->register_comp
 void Application::register_fan(fan::FanState *state) {
   for (auto *controller : this->controllers_)
     controller->register_fan(state);
-#ifdef USE_MQTT_FAN
-  if (this->mqtt_client_ != nullptr) {
-    state->set_mqtt(this->register_component(new MQTTFanComponent(state)));
-  }
-#endif
 }
 #endif
 
@@ -753,11 +695,6 @@ switch_::TemplateSwitch *Application::make_template_switch(const std::string &na
 void Application::register_cover(cover::Cover *cover) {
   for (auto *controller : this->controllers_)
     controller->register_cover(cover);
-#ifdef USE_MQTT_COVER
-  if (this->mqtt_client_ != nullptr) {
-    cover->set_mqtt(this->register_component(new MQTTCoverComponent(cover)));
-  }
-#endif
 }
 #endif
 
@@ -1005,22 +942,9 @@ display::Nextion *Application::make_nextion(UARTComponent *parent, uint32_t upda
 void Application::register_text_sensor(text_sensor::TextSensor *sensor) {
   for (auto *controller : this->controllers_)
     controller->register_text_sensor(sensor);
-#ifdef USE_MQTT_TEXT_SENSOR
-  if (this->mqtt_client_ != nullptr) {
-    sensor->set_mqtt(this->register_component(new MQTTTextSensor(sensor)));
-  }
-#endif
 }
 #endif
 
-#ifdef USE_MQTT_SUBSCRIBE_TEXT_SENSOR
-text_sensor::MQTTSubscribeTextSensor *Application::make_mqtt_subscribe_text_sensor(const std::string &name,
-                                                                                   std::string topic) {
-  auto *sensor = this->register_component(new MQTTSubscribeTextSensor(name, std::move(topic)));
-  this->register_text_sensor(sensor);
-  return sensor;
-}
-#endif
 
 #ifdef USE_HOMEASSISTANT_TEXT_SENSOR
 text_sensor::HomeassistantTextSensor *Application::make_homeassistant_text_sensor(const std::string &name,
@@ -1039,13 +963,6 @@ text_sensor::VersionTextSensor *Application::make_version_text_sensor(const std:
 }
 #endif
 
-#ifdef USE_MQTT_SUBSCRIBE_SENSOR
-sensor::MQTTSubscribeSensor *Application::make_mqtt_subscribe_sensor(const std::string &name, std::string topic) {
-  auto *sensor = this->register_component(new sensor::MQTTSubscribeSensor(name, std::move(topic)));
-  this->register_sensor(sensor);
-  return sensor;
-}
-#endif
 
 #ifdef USE_HOMEASSISTANT_SENSOR
 sensor::HomeassistantSensor *Application::make_homeassistant_sensor(const std::string &name, std::string entity_id) {
@@ -1201,11 +1118,6 @@ sensor::SDS011Component *Application::make_sds011(UARTComponent *parent) {
 void Application::register_climate(climate::ClimateDevice *climate) {
   for (auto *controller : this->controllers_)
     controller->register_climate(climate);
-#ifdef USE_MQTT_CLIMATE
-  if (this->mqtt_client_ != nullptr) {
-    climate->set_mqtt(this->register_component(new climate::MQTTClimateComponent(climate)));
-  }
-#endif
 }
 #endif
 

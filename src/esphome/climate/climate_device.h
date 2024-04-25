@@ -9,7 +9,6 @@
 #include "esphome/esppreferences.h"
 #include "esphome/climate/climate_mode.h"
 #include "esphome/climate/climate_traits.h"
-#include "esphome/climate/mqtt_climate_component.h"
 #include "esphome/climate/climate_automation.h"
 
 ESPHOME_NAMESPACE_BEGIN

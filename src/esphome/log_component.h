@@ -13,6 +13,7 @@
 #include "esphome/helpers.h"
 #include "esphome/log.h"
 #include "esphome/defines.h"
+#include "esphome/uart_component.h"
 
 ESPHOME_NAMESPACE_BEGIN
 
@@ -43,17 +44,13 @@ class LogComponent : public Component {
    * @param baud_rate The baud_rate for the serial interface. 0 to disable UART logging.
    * @param tx_buffer_size The buffer size (in bytes) used for constructing log messages.
    */
-  explicit LogComponent(uint32_t baud_rate = 115200, size_t tx_buffer_size = 512,
-                        UARTSelection uart = UART_SELECTION_UART0);
-
-  /// Manually set the baud rate for serial, set to 0 to disable.
-  void set_baud_rate(uint32_t baud_rate);
+  explicit LogComponent(UARTDevice* uart, size_t tx_buffer_size=512);
 
   /// Set the buffer size that's used for constructing log messages. Log messages longer than this will be truncated.
   void set_tx_buffer_size(size_t tx_buffer_size);
 
   /// Get the UART used by the logger.
-  UARTSelection get_uart() const;
+  UARTDevice* get_uart() const;
 
   /// Set the global log level. Note: Use the ESPHOME_LOG_LEVEL define to also remove the logs from the build.
   void set_global_log_level(int log_level);
@@ -66,7 +63,6 @@ class LogComponent : public Component {
   // (In most use cases you won't need these)
   /// Set up this component.
   void pre_setup();
-  uint32_t get_baud_rate() const;
   void dump_config() override;
 
   size_t get_tx_buffer_size() const;
@@ -86,15 +82,9 @@ class LogComponent : public Component {
  protected:
   void log_message_(int level, const char *tag, char *msg, int ret);
 
-  uint32_t baud_rate_;
   std::vector<char> tx_buffer_;
   int global_log_level_{ESPHOME_LOG_LEVEL};
-  UARTSelection uart_{UART_SELECTION_UART0};
-#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT//Serial used for USB CDC
-  HWCDC *hw_serial_{nullptr};
-#else
-  HardwareSerial *hw_serial_{nullptr};
-#endif
+  UARTDevice* m_uart;
   struct LogLevelOverride {
     std::string tag;
     int level;

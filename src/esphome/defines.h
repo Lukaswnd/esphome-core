@@ -1,9 +1,12 @@
 #ifndef ESPHOME_DEFINES_H
 #define ESPHOME_DEFINES_H
 
-#ifdef ARDUINO_ARCH_ESP8266
-#include <core_version.h>
+#if defined(ESP_HOME_DEFINES_INCLUDE)
+#include ESP_HOME_DEFINES_INCLUDE
+#elif __has_include("ESP_Home_Defines.h")
+#include "ESP_Home_Defines.h"
 #endif
+
 
 #define ESPHOME_VERSION "1.13.0-dev"
 
@@ -11,25 +14,20 @@
 #define ESPDEPRECATED(msg) __attribute__((deprecated(msg)))
 #define ALWAYS_INLINE __attribute__((always_inline))
 
-#ifndef DOXYGEN
 #define ESPHOME_NAMESPACE_BEGIN namespace esphome {
 #define ESPHOME_NAMESPACE_END }
 #define ESPHOME_NAMESPACE esphome
-#else
-#define ESPHOME_NAMESPACE_BEGIN / ## /
-#define ESPHOME_NAMESPACE_END / ## /
-#define ESPHOME_NAMESPACE
-#endif
+
 
 #ifndef ESPHOME_USE
 #define USE_WEB_SERVER
-//#define USE_OTA
-//#define USE_I2C
+#define USE_OTA
+#define USE_I2C
 #define USE_BINARY_SENSOR
 #define USE_GPIO_BINARY_SENSOR
 #define USE_STATUS_BINARY_SENSOR
 #define USE_SENSOR
-/*#define USE_DHT_SENSOR
+#define USE_DHT_SENSOR
 #define USE_DHT12_SENSOR
 #define USE_DALLAS_SENSOR
 #define USE_PULSE_COUNTER_SENSOR
@@ -38,13 +36,13 @@
 #define USE_BMP085_SENSOR
 #define USE_HTU21D_SENSOR
 #define USE_HDC1080_SENSOR
-#define USE_ULTRASONIC_SENSOR*/
+#define USE_ULTRASONIC_SENSOR
 #define USE_WIFI_SIGNAL_SENSOR
 #define USE_OUTPUT
 #ifdef ARDUINO_ARCH_ESP32
-//#define USE_LEDC_OUTPUT
+#define USE_LEDC_OUTPUT
 #endif
-//#define USE_PCA9685_OUTPUT
+#define USE_PCA9685_OUTPUT
 #define USE_GPIO_OUTPUT
 #ifdef ARDUINO_ARCH_ESP8266
 #ifndef ARDUINO_ESP8266_RELEASE_2_3_0
@@ -54,13 +52,13 @@
 #define USE_LIGHT
 #define USE_SWITCH
 #define USE_OUTPUT_SWITCH
-//#define USE_REMOTE
-//#define USE_REMOTE_RECEIVER
-//#define USE_REMOTE_TRANSMITTER
+#define USE_REMOTE
+#define USE_REMOTE_RECEIVER
+#define USE_REMOTE_TRANSMITTER
 #define USE_GPIO_SWITCH
 #define USE_RESTART_SWITCH
 #define USE_SHUTDOWN_SWITCH
-/*#define USE_FAN
+#define USE_FAN
 #define USE_DEBUG_COMPONENT
 #define USE_DEEP_SLEEP
 #define USE_PCF8574
@@ -73,18 +71,18 @@
 #define USE_BME280
 #define USE_BMP280
 #define USE_BME680
-#define USE_SHT3XD*/
+#define USE_SHT3XD
 #define USE_TEMPLATE_SENSOR
 #ifdef ARDUINO_ARCH_ESP32
-//#define USE_ESP32_TOUCH_BINARY_SENSOR
+#define USE_ESP32_TOUCH_BINARY_SENSOR
 #endif
 #ifdef ARDUINO_ARCH_ESP32
-//#define USE_ESP32_BLE_TRACKER
-//#define USE_ESP32_BLE_BEACON
+#define USE_ESP32_BLE_TRACKER
+#define USE_ESP32_BLE_BEACON
 #endif
 #define USE_ROTARY_ENCODER_SENSOR
-//#define USE_MAX31855_SENSOR
-//#define USE_MAX6675_SENSOR
+#define USE_MAX31855_SENSOR
+#define USE_MAX6675_SENSOR
 #define USE_TEMPLATE_BINARY_SENSOR
 #define USE_TEMPLATE_SWITCH
 #define USE_COVER
@@ -103,7 +101,7 @@
 #define USE_MHZ19
 #define USE_UART_SWITCH
 #define USE_UPTIME_SENSOR
-/*#define USE_INA219
+#define USE_INA219
 #define USE_INA3221
 #define USE_HMC5883L
 #define USE_RDM6300
@@ -115,11 +113,11 @@
 #define USE_LCD_DISPLAY_PCF8574
 #define USE_SSD1306
 #define USE_WAVESHARE_EPAPER
-#define USE_DISPLAY*/
+#define USE_DISPLAY
 #define USE_TIME
-/*#define USE_SNTP_COMPONENT
+#define USE_SNTP_COMPONENT
 #define USE_NEXTION
-#define USE_HLW8012*/
+#define USE_HLW8012
 #define USE_TEXT_SENSOR
 #define USE_VERSION_TEXT_SENSOR
 #define USE_TEMPLATE_TEXT_SENSOR
@@ -131,7 +129,7 @@
 #define USE_A4988
 #define USE_ULN2003
 #define USE_TOTAL_DAILY_ENERGY_SENSOR
-#define USE_MY9231_OUTPUT*/
+#define USE_MY9231_OUTPUT
 #define USE_CUSTOM_SENSOR
 #define USE_CUSTOM_BINARY_SENSOR
 #define USE_CUSTOM_OUTPUT
@@ -143,14 +141,14 @@
 #define USE_HOMEASSISTANT_SENSOR
 #define USE_HOMEASSISTANT_TEXT_SENSOR
 #define USE_HOMEASSISTANT_BINARY_SENSOR
-/*#define USE_APDS9960
+#define USE_APDS9960
 #define USE_MPR121
 #define USE_COPY_OUTPUT
 #define USE_WIFI_INFO_TEXT_SENSOR
 #define USE_SERVO
 #define USE_TTP229_LSF
 #define USE_CLIMATE
-#define USE_BANG_BANG_CLIMATE*/
+#define USE_BANG_BANG_CLIMATE
 #endif
 
 #ifdef USE_REMOTE_RECEIVER
@@ -244,10 +242,12 @@
 #endif
 
 
-#if !defined(DONT_STORE_LOG_STR_IN_FLASH) && defined(ARDUINO_ARCH_ESP8266)
-#ifndef USE_STORE_LOG_STR_IN_FLASH
-#define USE_STORE_LOG_STR_IN_FLASH
+
+#if defined(ESP_HOME_DEFINES_EDIT_INCLUDE)
+#include ESP_HOME_DEFINES_EDIT_INCLUDE
+#elif __has_include("ESP_Home_Defines_Edit.h")
+#include "ESP_Home_Defines_Edit.h"
 #endif
-#endif
+
 
 #endif  // ESPHOME_DEFINES_H

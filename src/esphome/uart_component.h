@@ -47,33 +47,33 @@ class UARTComponent_IMPL : public UARTComponent {
   void dump_config() override {}
 
   void write_byte(uint8_t data) override {
-    this->m_serial->write(data);
+    this->m_serial.write(data);
     // ESP_LOGVV(TAG, "    Wrote 0b" BYTE_TO_BINARY_PATTERN " (0x%02X)", BYTE_TO_BINARY(data), data);
   }
 
   void write_array(const uint8_t *data, size_t len) override {
-    this->m_serial->write(data, len);
+    this->m_serial.write(data, len);
     for (size_t i = 0; i < len; i++) {
       // ESP_LOGVV(TAG, "    Wrote 0b" BYTE_TO_BINARY_PATTERN " (0x%02X)", BYTE_TO_BINARY(data[i]), data[i]);
     }
   }
 
   void write_str(const char *str) override {
-    this->m_serial->write(str);
+    this->m_serial.write(str);
     // ESP_LOGVV(TAG, "    Wrote \"%s\"", str);
   }
 
   bool peek_byte(uint8_t *data) override {
     if (!this->check_read_timeout_())
       return false;
-    *data = this->m_serial->peek();
+    *data = this->m_serial.peek();
     return true;
   }
 
   bool read_byte(uint8_t *data) override {
     if (!this->check_read_timeout_())
       return false;
-    *data = this->m_serial->read();
+    *data = this->m_serial.read();
     // ESP_LOGVV(TAG, "    Read 0b" BYTE_TO_BINARY_PATTERN " (0x%02X)", BYTE_TO_BINARY(*data), *data);
     return true;
   }
@@ -81,7 +81,7 @@ class UARTComponent_IMPL : public UARTComponent {
   bool read_array(uint8_t *data, size_t len) override {
     if (!this->check_read_timeout_(len))
       return false;
-    this->m_serial->readBytes(data, len);
+    this->m_serial.readBytes(data, len);
     for (size_t i = 0; i < len; i++) {
       // ESP_LOGVV(TAG, "    Read 0b" BYTE_TO_BINARY_PATTERN " (0x%02X)", BYTE_TO_BINARY(data[i]), data[i]);
     }
@@ -89,11 +89,11 @@ class UARTComponent_IMPL : public UARTComponent {
     return true;
   }
 
-  int available() override { return this->m_serial->available(); }
+  int available() override { return this->m_serial.available(); }
 
   void flush() override {
     // ESP_LOGVV(TAG, "    Flushing...");
-    this->serial->flush();
+    this->m_serial.flush();
   }
 
   float get_setup_priority() const override { return setup_priority::PRE_HARDWARE; }

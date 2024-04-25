@@ -64,71 +64,32 @@ void HOT LogComponent::log_message_(int level, const char *tag, char *msg, int r
   if (msg[ret - 1] == '\n') {
     msg[ret - 1] = '\0';
   }
-  if (this->baud_rate_ > 0)
-    this->hw_serial_->println(msg);
+  if (m_uart)
+    this->m_uart->println(msg);
   this->log_callback_.call(level, tag, msg);
 }
 
-LogComponent::LogComponent(uint32_t baud_rate, size_t tx_buffer_size, UARTSelection uart)
-    : baud_rate_(baud_rate), uart_(uart) {
+LogComponent::LogComponent(UARTDevice* uart, size_t tx_buffer_size)
+    : m_uart{uart} {
   this->set_tx_buffer_size(tx_buffer_size);
 }
 
 void LogComponent::pre_setup() {
-  if (this->baud_rate_ > 0) {
-    switch (this->uart_) {
-      case UART_SELECTION_UART0:
-#ifdef ARDUINO_ARCH_ESP8266
-      case UART_SELECTION_UART0_SWAP:
-#endif
-        this->hw_serial_ = &Serial;
-        break;
-#if ARDUINO_USB_MODE && ARDUINO_USB_CDC_ON_BOOT//Serial used for USB CDC
-#else
-      case UART_SELECTION_UART1:
-        this->hw_serial_ = &Serial1;
-        break;
-#ifdef ARDUINO_ARCH_ESP32
-      case UART_SELECTION_UART2:
-        this->hw_serial_ = &Serial2;
-        break;
-#endif
-#endif
-    }
-
-    this->hw_serial_->begin(this->baud_rate_);
-#ifdef ARDUINO_ARCH_ESP8266
-    if (this->uart_ == UART_SELECTION_UART0_SWAP) {
-      this->hw_serial_->swap();
-    }
-    this->hw_serial_->setDebugOutput(this->global_log_level_ >= ESPHOME_LOG_LEVEL_VERBOSE);
-#endif
-  }
-#ifdef ARDUINO_ARCH_ESP8266
-  else {
-    uart_set_debug(UART_NO);
-  }
-#endif
-
   global_log_component = this;
-#ifdef ARDUINO_ARCH_ESP32
   esp_log_set_vprintf(esp_idf_log_vprintf_);
   if (this->global_log_level_ >= ESPHOME_LOG_LEVEL_VERBOSE) {
     esp_log_level_set("*", ESP_LOG_VERBOSE);
   }
-#endif
 
   ESP_LOGI(TAG, "Log initialized");
 }
-uint32_t LogComponent::get_baud_rate() const { return this->baud_rate_; }
-void LogComponent::set_baud_rate(uint32_t baud_rate) { this->baud_rate_ = baud_rate; }
 void LogComponent::set_global_log_level(int log_level) { this->global_log_level_ = log_level; }
 void LogComponent::set_log_level(const std::string &tag, int log_level) {
   this->log_levels_.push_back(LogLevelOverride{tag, log_level});
 }
 size_t LogComponent::get_tx_buffer_size() const { return this->tx_buffer_.capacity(); }
 void LogComponent::set_tx_buffer_size(size_t tx_buffer_size) { this->tx_buffer_.reserve(tx_buffer_size); }
-UARTSelection LogComponent::get_uart() const { return this->uart_; }
+UARTDevice* LogComponent::get_uart() const { return this->m_uart; }
 void LogComponent::add_on_log_callback(std::function<void(int, const char *, const char *)> &&callback) {
   this->log_callback_.add(std::move(callback));
 }
@@ -143,8 +104,6 @@ const char *UART_SELECTIONS[] = {"UART0", "UART1", "UART0_SWAP"};
 void LogComponent::dump_config() {
   ESP_LOGCONFIG(TAG, "Logger:");
   ESP_LOGCONFIG(TAG, "  Level: %s", LOG_LEVELS[this->global_log_level_]);
-  ESP_LOGCONFIG(TAG, "  Log Baud Rate: %u", this->baud_rate_);
-  ESP_LOGCONFIG(TAG, "  Hardware UART: %s", UART_SELECTIONS[this->uart_]);
   for (auto &it : this->log_levels_) {
     ESP_LOGCONFIG(TAG, "  Level for '%s': %s", it.tag.c_str(), LOG_LEVELS[it.level]);
   }
