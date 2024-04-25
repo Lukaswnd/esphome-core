@@ -121,10 +121,8 @@
 #define USE_NEXTION
 #define USE_HLW8012*/
 #define USE_TEXT_SENSOR
-//#define USE_MQTT_SUBSCRIBE_TEXT_SENSOR
 #define USE_VERSION_TEXT_SENSOR
 #define USE_TEMPLATE_TEXT_SENSOR
-/*#define USE_MQTT_SUBSCRIBE_SENSOR
 #define USE_CSE7766
 #define USE_PMSX003
 #define USE_ENDSTOP_COVER
@@ -147,7 +145,6 @@
 #define USE_HOMEASSISTANT_BINARY_SENSOR
 /*#define USE_APDS9960
 #define USE_MPR121
-#define USE_MQTT
 #define USE_COPY_OUTPUT
 #define USE_WIFI_INFO_TEXT_SENSOR
 #define USE_SERVO
@@ -246,59 +243,6 @@
 #endif
 #endif
 
-#if defined(USE_MQTT) && defined(USE_BINARY_SENSOR)
-#ifndef USE_MQTT_BINARY_SENSOR
-#define USE_MQTT_BINARY_SENSOR
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_COVER)
-#ifndef USE_MQTT_COVER
-#define USE_MQTT_COVER
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_FAN)
-#ifndef USE_MQTT_FAN
-#define USE_MQTT_FAN
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_LIGHT)
-#ifndef USE_MQTT_LIGHT
-#define USE_MQTT_LIGHT
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_CUSTOM_COMPONENT)
-#ifndef USE_MQTT_CUSTOM_COMPONENT
-#define USE_MQTT_CUSTOM_COMPONENT
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_SENSOR)
-#ifndef USE_MQTT_SENSOR
-#define USE_MQTT_SENSOR
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_SWITCH)
-#ifndef USE_MQTT_SWITCH
-#define USE_MQTT_SWITCH
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_TEXT_SENSOR)
-#ifndef USE_MQTT_TEXT_SENSOR
-#define USE_MQTT_TEXT_SENSOR
-#endif
-#endif
-
-#if defined(USE_MQTT) && defined(USE_CLIMATE)
-#ifndef USE_MQTT_CLIMATE
-#define USE_MQTT_CLIMATE
-#endif
-#endif
 
 #if !defined(DONT_STORE_LOG_STR_IN_FLASH) && defined(ARDUINO_ARCH_ESP8266)
 #ifndef USE_STORE_LOG_STR_IN_FLASH

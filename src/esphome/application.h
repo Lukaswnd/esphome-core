@@ -180,39 +180,12 @@ class Application {
   /// Initialize the WiFi engine with no initial mode. Use this if you just want an Access Point.
   WiFiComponent *init_wifi();
 
-#ifdef USE_ETHERNET
-  EthernetComponent *init_ethernet();
-#endif
-
 #ifdef USE_OTA
   /** Initialize Over-the-Air updates.
    *
    * @return The OTAComponent. Use this to set advanced settings.
    */
   OTAComponent *init_ota();
-#endif
-
-#ifdef USE_MQTT
-  /** Initialize the MQTT client.
-   *
-   * @param address The address of your server.
-   * @param port The port of your server.
-   * @param username The username.
-   * @param password The password. Empty for no password.
-   * @return The MQTTClient. Use this to set advanced settings.
-   */
-  mqtt::MQTTClientComponent *init_mqtt(const std::string &address, uint16_t port, const std::string &username,
-                                       const std::string &password);
-
-  /** Initialize the MQTT client.
-   *
-   * @param address The address of your server.
-   * @param username The username.
-   * @param password The password. Empty for no password.
-   * @return The MQTTClient. Use this to set advanced settings.
-   */
-  mqtt::MQTTClientComponent *init_mqtt(const std::string &address, const std::string &username,
-                                       const std::string &password);
 #endif
 
 #ifdef USE_I2C
@@ -770,9 +743,6 @@ class Application {
                                          uint32_t update_interval = 60000);
 #endif
 
-#ifdef USE_MQTT_SUBSCRIBE_SENSOR
-  sensor::MQTTSubscribeSensor *make_mqtt_subscribe_sensor(const std::string &name, std::string topic);
-#endif
 
 #ifdef USE_HOMEASSISTANT_SENSOR
   sensor::HomeassistantSensor *make_homeassistant_sensor(const std::string &name, std::string entity_id);
@@ -785,10 +755,6 @@ class Application {
 
 #ifdef USE_CSE7766
   sensor::CSE7766Component *make_cse7766(UARTComponent *parent, uint32_t update_interval = 60000);
-#endif
-
-#ifdef USE_MQTT_SUBSCRIBE_TEXT_SENSOR
-  text_sensor::MQTTSubscribeTextSensor *make_mqtt_subscribe_text_sensor(const std::string &name, std::string topic);
 #endif
 
 #ifdef USE_HOMEASSISTANT_TEXT_SENSOR
@@ -1140,9 +1106,6 @@ class Application {
   void loop();
 
   WiFiComponent *get_wifi() const;
-#ifdef USE_MQTT
-  mqtt::MQTTClientComponent *get_mqtt_client() const;
-#endif
 
   /// Get the name of this Application set by set_name().
   const std::string &get_name() const;
@@ -1187,9 +1150,6 @@ class Application {
 
   std::vector<Component *> components_{};
   std::vector<Controller *> controllers_{};
-#ifdef USE_MQTT
-  mqtt::MQTTClientComponent *mqtt_client_{nullptr};
-#endif
   WiFiComponent *wifi_{nullptr};
 
   std::string name_;
